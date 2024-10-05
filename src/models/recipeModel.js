@@ -1,39 +1,74 @@
-import db from '../config/db.js';
+import db from '../config/database.js';
 
-class Recipe {
-  static async getAllRecipes() {
-    const [results] = await db.query('SELECT * FROM recipes');
-    return results;
+class RecetteService {
+  static async checkRecipe(titre) {
+    const [rows] = await db.query(
+      'SELECT COUNT(*) AS count FROM recettes WHERE titre = ?',
+      [titre]
+    );
+    return rows[0].count;
   }
-
-  static async getRecipeById(id) {
-    const [results] = await db.query('SELECT * FROM recipes WHERE id = ?', [
-      id,
+  static async getAllRecettes() {
+    try {
+      const [rows] = await db.query('SELECT * FROM recettes');
+      return rows;
+    } catch (error) {
+      console.error('Error fetching all recipes:', error.message);
+      throw error;
+    }
+  }
+  static async getRecipeByTitle(titre) {
+    const [rows] = await db.query('SELECT * FROM recettes WHERE titre = ?', [
+      titre,
     ]);
-
-    return results.length > 0 ? results[0] : null;
+    return rows.length ? rows[0] : null;
   }
-
-  static async createRecipe(id, title, ingredients, type) {
-    const [result] = await db.query(
-      'INSERT INTO recipes (id, title, ingredients, type) VALUES (?, ?, ?, ?)',
-      [id, title, ingredients, type]
-    );
-    return result.insertId;
+  static async getRecetteById(id) {
+    try {
+      const [rows] = await db.query('SELECT * FROM recettes WHERE id = ?', [
+        id,
+      ]);
+      return rows.length > 0 ? rows[0] : null;
+    } catch (error) {
+      console.error('Error fetching recipe by ID:', error.message);
+      throw error;
+    }
   }
-
-  static async updateRecipe(id, title, ingredients, type) {
-    const [result] = await db.query(
-      'UPDATE recipes SET title = ?, ingredients = ?, type = ? WHERE id = ?',
-      [title, ingredients, type, id]
-    );
-    return result.affectedRows;
+  static async createRecette(titre, ingredients, type) {
+    try {
+      const [result] = await db.query(
+        'INSERT INTO recettes (titre, ingredients, type) VALUES (?, ?, ?)',
+        [titre, ingredients, type]
+      );
+      return result.insertId;
+    } catch (error) {
+      console.error('Error creating recipe:', error.message);
+      throw error;
+    }
   }
-
-  static async deleteRecipe(id) {
-    const [result] = await db.query('DELETE FROM recipes WHERE id = ?', [id]);
-    return result.affectedRows;
+  static async updateRecette(id, titre, ingredients, type) {
+    try {
+      const [result] = await db.query(
+        'UPDATE recettes SET titre = ?, ingredients = ?, type = ? WHERE id = ?',
+        [titre, ingredients, type, id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      console.error('Error updating recipe:', error.message);
+      throw error;
+    }
+  }
+  static async deleteRecette(id) {
+    try {
+      const [result] = await db.query('DELETE FROM recettes WHERE id = ?', [
+        id,
+      ]);
+      return result.affectedRows;
+    } catch (error) {
+      console.error('Error deleting recipe:', error.message);
+      throw error;
+    }
   }
 }
 
-export default Recipe;
+export default RecetteService;

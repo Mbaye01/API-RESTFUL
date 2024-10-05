@@ -1,113 +1,68 @@
-import { body, param, validationResult } from 'express-validator';
-import Recipe from '../models/RecipeModel.js';
-
-const handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+import RecetteService from '../models/RecetteModel.js';
+class RecetteController {
+  static async getAllRecettes(req, res, next) {
+    try {
+      const recettes = await RecetteService.getAllRecettes();
+      res.json(recettes);
+    } catch (error) {
+      next(error);
+    }
   }
-  next();
-};
 
-export const getAllRecipes = async (req, res) => {
-  try {
-    const recipes = await Recipe.getAllRecipes();
-    res.json(recipes);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-export const getRecipeById = [
-  param('id').isInt({ min: 1 }).withMessage('ID must be a positive integer'),
-  handleValidationErrors,
-  async (req, res) => {
+  static async getRecetteById(req, res, next) {
     const { id } = req.params;
     try {
-      const recipe = await Recipe.getRecipeById(id);
-
-      if (!recipe) {
-        return res.status(404).json({ message: 'Recipe not found' });
+      const recette = await RecetteService.getRecetteById(id);
+      if (!recette) {
+        return res.status(404).json({ message: 'Recette non trouvée' });
       }
-      res.json(recipe);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.json(recette);
+    } catch (error) {
+      next(error);
     }
-  },
-];
+  }
 
-export const createRecipe = [
-  body('title')
-    .isString()
-    .withMessage('Title must be a string')
-    .notEmpty()
-    .withMessage('Title is required'),
-  body('description')
-    .isString()
-    .withMessage('Description must be a string')
-    .notEmpty()
-    .withMessage('Description is required'),
-  body('date').isDate().withMessage('Date must be a valid date'),
-  handleValidationErrors,
-  async (req, res) => {
-    const { title, description, date } = req.body;
+  static async createRecette(req, res, next) {
+    console.log('bonjour');
+    const { titre, ingredients, type } = req.body;
     try {
-      const id = await Recipe.createRecipe(title, description, date);
-      res.status(201).json({
-        message: 'Recipe successfully created!',
-        id,
-        title,
-        description,
-        date,
-      });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+      const id = await RecetteService.createRecette(titre, ingredients, type);
+      res.status(201).json({ id, titre, ingredients, type });
+    } catch (error) {
+      next(error);
     }
-  },
-];
+  }
 
-export const updateRecipe = [
-  param('id').isInt({ min: 1 }).withMessage('ID must be a positive integer'),
-  body('title').optional().isString().withMessage('Title must be a string'),
-  body('description')
-    .optional()
-    .isString()
-    .withMessage('Description must be a string'),
-  body('date').optional().isDate().withMessage('Date must be a valid date'),
-  handleValidationErrors,
-  async (req, res) => {
+  static async updateRecette(req, res, next) {
     const { id } = req.params;
-    const { title, description, date } = req.body;
+    const { titre, ingredients, type } = req.body;
     try {
-      const affectedRows = await Recipe.updateRecipe(
+      const affectedRows = await RecetteService.updateRecette(
         id,
-        title,
-        description,
-        date
+        titre,
+        ingredients,
+        type
       );
       if (affectedRows === 0) {
-        return res.status(404).json({ message: 'Recipe not found' });
+        return res.status(404).json({ message: 'Recette non trouvée' });
       }
-      res.json({ message: 'Recipe updated successfully' });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.json({ message: 'Recette mise à jour avec succès' });
+    } catch (error) {
+      next(error);
     }
-  },
-];
+  }
 
-export const deleteRecipe = [
-  param('id').isInt({ min: 1 }).withMessage('ID must be a positive integer'),
-  handleValidationErrors,
-  async (req, res) => {
+  static async deleteRecette(req, res, next) {
     const { id } = req.params;
     try {
-      const affectedRows = await Recipe.deleteRecipe(id);
+      const affectedRows = await RecetteService.deleteRecette(id);
       if (affectedRows === 0) {
-        return res.status(404).json({ message: 'Recipe not found' });
+        return res.status(404).json({ message: 'Recette non trouvée' });
       }
-      res.json({ message: 'Recipe deleted successfully' });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.json({ message: 'Recette supprimée avec succès' });
+    } catch (error) {
+      next(error);
     }
-  },
-];
+  }
+}
+export default RecetteController;

@@ -1,8 +1,13 @@
-require('dotenv').config();
+import express from 'express';
+import router from './src/routes/recetteRoutes.js';
+import bodyParser from 'body-parser';
 
-// Utiliser les variables d'environnement
-const port = process.env.PORT || 3000;
-const dbURL = process.env.DATABASE_URL;
+const app = express();
+const PORT = process.env.DB_PORT;
 
-console.log(`Server running on port ${port}`);
-console.log(`Connected to database at ${dbURL}`);
+app.use(bodyParser.json());
+app.use(router);
+
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});

@@ -1,106 +1,176 @@
-### Le Délice - API de Gestion des Recettes
+# Gestion Recette API
 
-Description
-Cette API a été développée pour le restaurant Le Délice afin de centraliser la gestion des recettes. Elle permet d'ajouter, de modifier, de lister et de supprimer des recettes. Cette API est construite avec ExpressJS et utilise une base de données MySQL pour le stockage des informations. Elle est conteneurisée avec Docker pour faciliter le déploiement.
-
-### Fonctionnalités
-
-- Ajouter une recette
-
-- Modifier une recette
-
-- Supprimer une recette
-
-- Lister toutes les recettes
-
-- Validation des données avec `express-validator`
-
-- Tests unitaires avec `Jest`
-
-- Outil de formatage avec `Prettier`
-
-- Analyse statique du code avec `ESLint`
-
-### Installation et Démarrage du Projet
+Cette API gère les recettes avec des fonctionnalités CRUD complètes (Création, Lecture, Mise à jour, Suppression). Elle permet d'ajouter, consulter, modifier et supprimer des recettes en fournissant des informations comme le nom, les ingrédients et les instructions.
 
 ## Prérequis
 
-- Node.js (version 14+ recommandée)
-- MySQL (version 5.7+)
-- Postman (pour les tester de l'API)
-- Docker (pour la containerisation)
+Avant de commencer, assurez-vous d'avoir installé :
 
-# Installation
+- [Node.js](https://nodejs.org/) (version 14 ou supérieure)
+- [MySQL](https://dev.mysql.com/downloads/installer/) (version 5.7 ou supérieure)
+- Un outil de gestion de requêtes API comme [Insomnia](https://insomnia.rest/download) .
+- [Docker](https://www.docker.com/products/docker-desktop/)
 
-1. Cloner le projet :
+## Étapes d'installation
 
-```bash
-git https://github.com/Mbaye01/API-RESTFUL.git
+- Clonez le dépôt :
+
+```
+git clone https://github.com/Mbaye01/DELICE-API-RESTFUL.git
 ```
 
-```bash
-cd API-RESTFUL
+## Accédez au répertoire du projet :
+
+```
+cd DELICE_API_RESTFUL
 ```
 
-2. Installer les dépendances :
+## Installez les dépendances :
 
-```bash
+```
 npm install
 ```
 
-3. Configurer la base de données :
+## Endpoints de l'API
 
-- Mettre à jour les informations de connexion à la base de données (hôte, utilisateur, mot de passe, nom de la base de données).
+### 1. `GET /api/recettes`
 
-4. Initialiser la base de données :
+Récupère la liste de toutes les recettes.
 
-- Créez une base de données MySQL et assurez-vous que la table recipes existe avec la structure suivante :
+**Réponse :**
 
-```bash
-CREATE TABLE recipes (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL,
-  date DATE NOT NULL
-);
+- 200 OK
+
+```
+[
+    {
+        "id": 1,
+        "titre": "Recette 1",
+        "ingredients": "Ingrédient 1, Ingrédient 2",
+        "type": "entrée"
+    },
+]
 ```
 
-5. Démarrer le serveur :
+## 2. POST /api/recettes
 
-```bash
+Crée une nouvelle recette.
+
+- Corps de la requête :
+
+```
+{
+    "titre": "Recette 2",
+    "ingredients": "Ingrédient 1, Ingrédient 2",
+    "type": "dessert"
+}
+```
+
+Réponse :
+
+201
+
+```
+{
+    "id": 2,
+    "titre": "Recette 2",
+    "ingredients": "Ingrédient 1, Ingrédient 2",
+    "type": "plat"
+}
+```
+
+## 3. GET /api/recettes/{id}
+
+Récupère les détails d'une recette par son ID.
+
+- Réponse :
+
+200 OK
+
+```
+{
+    "id": 1,
+    "titre": "Recette 1",
+    "ingredients": "Ingrédient 1, Ingrédient 2",
+    "type": "plat"
+}
+```
+
+404 Not Found (si la recette n'existe pas)
+
+## Configurez les paramètres de connexion à la base de données dans le fichier de configuration.
+
+- Configurer l'environnement
+  Renommer le fichier .env.exemple en .env à la racine du projet et ajoutez les configurations nécessaires (par exemple, pour la base de données).
+
+- Exemple .env :
+
+```
+DB_HOST=localhost
+MYSQL_ROOT_PASSWORD=yourPassword
+DB_DATABASE=yourDatabase
+DB_USER=yourUsername
+DB_PASSWORD=yourPassword
+PORT=3000
+```
+
+- Démarrer le projet
+
+```
 npm start
 ```
 
-### Codes de Statut HTTP
+L'API sera accessible à [http://localhost:3000](http://localhost:3000)
 
-- 200 OK : La requête a été traitée avec succès.
-- 201 Created : Une nouvelle ressource a été créée.
-- 400 Bad Request : Les données fournies ne sont pas valides.
-- 404 Not Found : La ressource demandée n'a pas été trouvée.
-- 500 Internal Server Error : Une erreur serveur est survenue.
+- Exécution des tests unitaires
+  Assurez-vous que jasmine un framework de test est installé :
 
-## Lancer l'application
+Lancez les tests avec la commande suivante :
 
-```bash
-npm start
 ```
-
-## Les étapes pour construire et lancer le conteneur Docker:
-
-```bash
-docker compose up
-```
-
-```bash
-docker exec -it gestion_recettes mysql -u root -p
-```
-
-## Execusion des tests unitaire
-
-```bash
 npm test
 ```
 
-# Auteurs
+## Tests ESLint et formater avec Prettier
+
+- Pour s'assurer que le code respecte les standards de style définis par ESLint, vous pouvez exécuter les tests ESLint :
+
+```
+npm run lint
+```
+
+- Corriger automatiquement les erreurs avec ESLint
+
+```
+npm run lint:fix
+```
+
+- Formatage du commande
+
+```
+npm run format
+```
+
+# Docker
+
+## Construction de l'image Docker
+
+- Pour construire l'image Docker, exécutez :
+
+```
+docker-compose up --build
+```
+
+## Lancement du conteneur Docker
+
+Pour lancer le conteneur :
+
+```
+docker-compose up
+```
+
+L'API sera accessible à http://localhost:3000.
+
+## Auteur
 
 [Mbaye Abdellahi Kalidou](https://github.com/Mbaye01/API-RESTFUL.git)
