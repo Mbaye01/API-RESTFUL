@@ -1,12 +1,12 @@
-DROP DATABASE IF EXISTS Gestion_recette;
+DROP DATABASE IF EXISTS recette_gestion;
 
-CREATE DATABASE Gestion_recette;
+CREATE DATABASE recette_gestion;
 
 USE recette_gestion;
 
 CREATE TABLE recettes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(100) NOT NULL,
-    ingredients TEXT NOT NULL, 
-    type VARCHAR(10) NOT NULL  
+    ingredients VARCHAR(100) NOT NULL,
+    type TEXT NOT NULL
 );
