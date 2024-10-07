@@ -8,7 +8,6 @@ Avant de commencer, assurez-vous d'avoir installé :
 
 - [Node.js](https://nodejs.org/) (version 14 ou supérieure)
 - [MySQL](https://dev.mysql.com/downloads/installer/) (version 5.7 ou supérieure)
-- Un outil de gestion de requêtes API comme [Insomnia](https://insomnia.rest/download) .
 - [Docker](https://www.docker.com/products/docker-desktop/)
 
 ## Étapes d'installation
@@ -120,8 +119,6 @@ PORT=3000
 npm start
 ```
 
-L'API sera accessible à [http://localhost:3000](http://localhost:3000)
-
 - Exécution des tests unitaires
   Assurez-vous que jasmine un framework de test est installé :
 
@@ -168,8 +165,6 @@ Pour lancer le conteneur :
 ```
 docker-compose up
 ```
-
-L'API sera accessible à http://localhost:3000.
 
 ## Auteur
 
